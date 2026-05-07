@@ -1,0 +1,88 @@
+From 6902148626781de2b4a2aec2c00fb6a13328209c Mon Sep 17 00:00:00 2001
+From: Pratham Deshmukh <p-deshmukh@ti.com>
+Date: Wed, 4 Mar 2026 15:24:41 +0530
+Subject: [PATCH 1/8] Use ARM_COMPUTE_ENABLE_NEON in code for checking NEON
+ support
+
+ENABLE_NEON is a flag used by the build systems. The flag is not used
+in code, instead ARM_COMPUTE_ENABLE_NEON is used everywhere.
+
+Drop the ENABLE_NEON compiler definition to prevent any accidental
+use in code.
+
+Upstream-Status: Pending
+
+Authored-by: Andrew Davis <afd@ti.com>
+Signed-off-by: Pratham Deshmukh <p-deshmukh@ti.com>
+---
+ Android.bp                     | 1 -
+ BUILD.bazel                    | 1 -
+ SConscript                     | 2 +-
+ SConstruct                     | 2 +-
+ scripts/generate_android_bp.py | 1 -
+ 5 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/Android.bp b/Android.bp
+index 9f659b2f6e..eec8366833 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -157,7 +157,6 @@ arm_compute_library_defaults {
+             "-DEMBEDDED_KERNELS",
+             "-DARM_COMPUTE_ASSERTS_ENABLED",
+             "-DARM_COMPUTE_CPP_SCHEDULER",
+-            "-DENABLE_NEON",
+             "-DARM_COMPUTE_ENABLE_NEON",
+             "-Wno-unused-parameter",
+             "-DNO_DOT_IN_TOOLCHAIN",
+diff --git a/BUILD.bazel b/BUILD.bazel
+index 3cbd582c2b..d555ccea45 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -170,7 +170,6 @@ config_setting(
+ cc_library(
+     name = "common_defines",
+     defines = [
+-                  "ENABLE_NEON",
+                   "ARM_COMPUTE_CPU_ENABLED",
+                   "ARM_COMPUTE_ENABLE_NEON",
+                   "ARM_COMPUTE_ENABLE_I8MM",
+diff --git a/SConscript b/SConscript
+index d2f39c4a5b..45a9471d34 100644
+--- a/SConscript
++++ b/SConscript
+@@ -97,7 +97,7 @@ def build_multiisa_lib_objects():
+
+     # note that ARM_COMPUTE_ENABLE_FP16 is enabled in update_data_type_layout_flags() to make
+     # sure the environment is progated to the validation suite
+-    arm_compute_env.Append(CPPDEFINES = ['ENABLE_NEON', 'ARM_COMPUTE_ENABLE_NEON',
++    arm_compute_env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_NEON',
+                            'ENABLE_SVE', 'ARM_COMPUTE_ENABLE_SVE','ARM_COMPUTE_ENABLE_SVE2',
+                            'ARM_COMPUTE_ENABLE_BF16', 'ARM_COMPUTE_ENABLE_I8MM',
+                            'ARM_COMPUTE_ENABLE_SVEF32MM', 'ARM_COMPUTE_ENABLE_SME',
+diff --git a/SConstruct b/SConstruct
+index 39c0ffdea3..1fce556c8e 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -334,7 +334,7 @@ if 'v7a' in env['arch'] and env['estate'] == '64':
+     print("ERROR: armv7a architecture has only 32-bit execution state")
+     Exit(1)
+
+-env.Append(CPPDEFINES = ['ENABLE_NEON', 'ARM_COMPUTE_ENABLE_NEON'])
++env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_NEON'])
+
+ if 'sve' in env['arch']:
+     env.Append(CPPDEFINES = ['ENABLE_SVE', 'ARM_COMPUTE_ENABLE_SVE'])
+diff --git a/scripts/generate_android_bp.py b/scripts/generate_android_bp.py
+index f9dbd89228..ba2765900d 100755
+--- a/scripts/generate_android_bp.py
++++ b/scripts/generate_android_bp.py
+@@ -92,7 +92,6 @@ arm_compute_library_defaults {
+             "-DEMBEDDED_KERNELS",
+             "-DARM_COMPUTE_ASSERTS_ENABLED",
+             "-DARM_COMPUTE_CPP_SCHEDULER",
+-            "-DENABLE_NEON",
+             "-DARM_COMPUTE_ENABLE_NEON",
+             "-Wno-unused-parameter",
+             "-DNO_DOT_IN_TOOLCHAIN",
+--
+2.34.1

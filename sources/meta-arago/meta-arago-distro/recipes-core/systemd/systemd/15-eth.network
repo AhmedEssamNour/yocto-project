@@ -1,0 +1,10 @@
+[Match]
+Name=eth*
+KernelCommandLine=!root=/dev/nfs
+
+[Link]
+RequiredForOnline=no
+
+[Network]
+LinkLocalAddressing=ipv4
+DHCP=yes

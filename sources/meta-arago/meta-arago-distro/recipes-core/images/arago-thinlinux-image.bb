@@ -1,0 +1,24 @@
+SUMMARY = "Arago Thin Linux image"
+
+DESCRIPTION = "Minimal bootable image with container to start the next\
+ complex system up."
+
+require arago-image.inc
+
+IMAGE_FEATURES += "package-management splash"
+
+# Allow users to tack on additional packages as interesting.
+ARAGO_THIN_IMAGE_EXTRA_INSTALL ?= ""
+
+# we're assuming some display manager is being installed with opengl
+SYSTEMD_DEFAULT_TARGET = "${@bb.utils.contains('DISTRO_FEATURES','opengl','graphical.target','multi-user.target',d)}"
+
+IMAGE_INSTALL += "\
+    packagegroup-arago-base \
+    packagegroup-arago-console \
+    ${@bb.utils.contains('DISTRO_FEATURES','opengl','packagegroup-arago-graphics','',d)} \
+    packagegroup-arago-connectivity \
+    packagegroup-arago-crypto \
+    docker \
+    ${ARAGO_THIN_IMAGE_EXTRA_INSTALL} \
+"

@@ -1,0 +1,52 @@
+{
+    "APPEND-1" : {
+        "skip_vars" : [ "FILES", "RDEPENDS", "RPROVIDES" ]
+    },
+    "APPEND-2" : {
+        "skip_vars" : [ "PR", "PV" ],
+        "files" : {
+            "meta-arago-distro/conf/distro/include/arago-prefs.inc" : {
+                "skip_vars": [ "PREFERRED_PROVIDER_virtual/kernel" ]
+            }
+        },
+        "file_regex" : {
+            "meta-arago-distro\\/recipes-graphics\\/emptty\\/emptty_\\S+\\.bb" : {
+                "skip_vars" : [ "GO_TAGS" ]
+            }
+        }
+    },
+    "GUARD-1" : {
+        "skip_files" : [
+            "meta-arago-distro/dynamic-layers/chromium-browser-layer/recipes-core/images/arago-default-image.bbappend",
+            "meta-arago-distro/dynamic-layers/selinux/recipes-core/images/arago-default-image.bbappend",
+            "meta-arago-distro/dynamic-layers/selinux/recipes-kernel/linux/linux-ti-staging_%.bbappend",
+            "meta-arago-extras/recipes-extended/sysrepo/libyang_%.bbappend",
+            "meta-arago-test/dynamic-layers/qt6-layer/recipes-core/packagegroups/ti-test.bbappend",
+            "meta-arago-test/dynamic-layers/flutter-layer/recipes-graphics/flutter/flutter-wayland-client_%.bbappend",
+            "meta-arago-test/dynamic-layers/flutter-layer/recipes-graphics/flutter/flutter-samples-material-3-demo_%.bbappend",
+            "meta-arago-test/recipes-benchmark/stream/stream_%.bbappend",
+            "meta-arago-test/recipes-extended/bc/bc_%.bbappend"
+        ]
+    },
+    "GUARD-2" : {
+        "skip_vars" : [ "arago" , "ti-soc" ]
+    },
+    "PV-1" :{
+        "skip_files" : [
+            "meta-arago-distro/recipes-connectivity/bt-enable/bt-enable.bb",
+            "meta-arago-distro/recipes-connectivity/initscript-telnetd/initscript-telnetd.bb",
+            "meta-arago-distro/recipes-connectivity/systemd-telnetd/systemd-telnetd.bb",
+            "meta-arago-distro/recipes-core/arago-gpl-notice/arago-gpl-notice.bb",
+            "meta-arago-distro/recipes-core/meta/meta-toolchain-arago-tisdk-server.bb",
+            "meta-arago-distro/recipes-core/meta/meta-toolchain-arago-tisdk.bb",
+            "meta-arago-distro/recipes-core/meta/meta-toolchain-arago.bb",
+            "meta-arago-distro/recipes-graphics/emptty/emptty-conf.bb",
+            "meta-arago-distro/recipes-graphics/wayland/weston-init-arago.bb",
+            "meta-arago-extras/recipes-core/oprofile-example/oprofile-example_git.bb",
+            "meta-arago-extras/recipes-devtools/opkg/opkg-bash-completion.bb",
+            "meta-arago-extras/recipes-extended/sysrepo/nw-configurator.bb",
+            "meta-arago-extras/recipes-multimedia/gst-plugins-ti/gstreamer1.0-plugins-ducati_git.bb",
+            "meta-arago-extras/recipes-multimedia/gst-plugins-ti/gstreamer1.0-plugins-vpe_git.bb"
+        ]
+    }
+}

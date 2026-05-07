@@ -1,0 +1,6 @@
+[Match]
+Name=usb*
+
+[Network]
+LinkLocalAddressing=ipv4
+DHCP=yes

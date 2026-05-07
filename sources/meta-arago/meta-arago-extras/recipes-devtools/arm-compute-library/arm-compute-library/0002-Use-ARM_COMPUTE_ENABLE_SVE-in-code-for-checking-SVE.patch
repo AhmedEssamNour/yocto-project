@@ -1,0 +1,188 @@
+From efaf2a32cefa5096eeb560cb28f3d4987ac3ca18 Mon Sep 17 00:00:00 2001
+From: Pratham Deshmukh <p-deshmukh@ti.com>
+Date: Wed, 4 Mar 2026 15:30:57 +0530
+Subject: [PATCH 2/8] Use ARM_COMPUTE_ENABLE_SVE in code for checking SVE
+ support
+
+ENABLE_SVE is a flag used by the build systems. The flag used in code
+is ARM_COMPUTE_ENABLE_SVE. There are just a couple spots where the
+build system flag is used instead causing the need to define both.
+
+Switch these last users of ENABLE_SVE over to ARM_COMPUTE_ENABLE_SVE
+then drop the ENABLE_SVE definition to prevent any more instances
+being added in the future.
+
+Upstream-Status: Pending
+
+Authored-by: Andrew Davis <afd@ti.com>
+Signed-off-by: Pratham Deshmukh <p-deshmukh@ti.com>
+---
+ BUILD.bazel                                   |  3 ---
+ SConscript                                    |  2 +-
+ SConstruct                                    |  2 +-
+ .../batchnormalization/impl/SVE/fp16.cpp      |  2 +-
+ .../batchnormalization/impl/SVE/fp32.cpp      |  2 +-
+ tests/validation/NEON/ArithmeticAddition.cpp  |  6 ++---
+ .../validation/helpers/ActivationHelpers.cpp  | 24 +++++++++----------
+ 7 files changed, 19 insertions(+), 22 deletions(-)
+
+diff --git a/BUILD.bazel b/BUILD.bazel
+index d555ccea45..28f39d64d9 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -297,7 +297,6 @@ cc_library(
+         "//conditions:default": [],
+     }),
+     local_defines = [
+-        "ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_SVE2",
+         "ARM_COMPUTE_ENABLE_BF16",
+@@ -348,7 +347,6 @@ cc_library(
+         "//conditions:default": [],
+     }),
+     local_defines = [
+-        "ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_BF16",
+     ],
+@@ -409,7 +407,6 @@ cc_library(
+         "//conditions:default": [],
+     }),
+     local_defines = [
+-        "ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_SVE",
+         "ARM_COMPUTE_ENABLE_BF16",
+     ],
+diff --git a/SConscript b/SConscript
+index 45a9471d34..0fee195ecf 100644
+--- a/SConscript
++++ b/SConscript
+@@ -98,7 +98,7 @@ def build_multiisa_lib_objects():
+     # note that ARM_COMPUTE_ENABLE_FP16 is enabled in update_data_type_layout_flags() to make
+     # sure the environment is progated to the validation suite
+     arm_compute_env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_NEON',
+-                           'ENABLE_SVE', 'ARM_COMPUTE_ENABLE_SVE','ARM_COMPUTE_ENABLE_SVE2',
++                           'ARM_COMPUTE_ENABLE_SVE','ARM_COMPUTE_ENABLE_SVE2',
+                            'ARM_COMPUTE_ENABLE_BF16', 'ARM_COMPUTE_ENABLE_I8MM',
+                            'ARM_COMPUTE_ENABLE_SVEF32MM', 'ARM_COMPUTE_ENABLE_SME',
+                            'ARM_COMPUTE_ENABLE_SME2', 'ENABLE_SME'])
+diff --git a/SConstruct b/SConstruct
+index 1fce556c8e..22a30f3eb2 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -337,7 +337,7 @@ if 'v7a' in env['arch'] and env['estate'] == '64':
+ env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_NEON'])
+
+ if 'sve' in env['arch']:
+-    env.Append(CPPDEFINES = ['ENABLE_SVE', 'ARM_COMPUTE_ENABLE_SVE'])
++    env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_SVE'])
+     if 'sve2' in env['arch']:
+         env.Append(CPPDEFINES = ['ARM_COMPUTE_ENABLE_SVE2'])
+
+diff --git a/src/core/NEON/kernels/batchnormalization/impl/SVE/fp16.cpp b/src/core/NEON/kernels/batchnormalization/impl/SVE/fp16.cpp
+index 48caaa3e63..e07593312c 100644
+--- a/src/core/NEON/kernels/batchnormalization/impl/SVE/fp16.cpp
++++ b/src/core/NEON/kernels/batchnormalization/impl/SVE/fp16.cpp
+@@ -128,4 +128,4 @@ void fp16_sve_batch_normalization(ITensor             *src,
+ }
+ } // namespace cpu
+ } // namespace arm_compute
+-#endif // ENABLE_SVE
++#endif // ARM_COMPUTE_ENABLE_SVE
+diff --git a/src/core/NEON/kernels/batchnormalization/impl/SVE/fp32.cpp b/src/core/NEON/kernels/batchnormalization/impl/SVE/fp32.cpp
+index df4fbfe607..0d52d2c3c0 100644
+--- a/src/core/NEON/kernels/batchnormalization/impl/SVE/fp32.cpp
++++ b/src/core/NEON/kernels/batchnormalization/impl/SVE/fp32.cpp
+@@ -128,4 +128,4 @@ void fp32_sve_batch_normalization(ITensor             *src,
+ }
+ } // namespace cpu
+ } // namespace arm_compute
+-#endif // ENABLE_SVE
++#endif // ARM_COMPUTE_ENABLE_SVE
+diff --git a/tests/validation/NEON/ArithmeticAddition.cpp b/tests/validation/NEON/ArithmeticAddition.cpp
+index 94a24cffd4..b51ff77fd3 100644
+--- a/tests/validation/NEON/ArithmeticAddition.cpp
++++ b/tests/validation/NEON/ArithmeticAddition.cpp
+@@ -49,12 +49,12 @@ namespace validation
+ using framework::dataset::make;
+ namespace
+ {
+-#if !defined(__aarch64__) || defined(ENABLE_SVE)
++#if !defined(__aarch64__) || defined(ARM_COMPUTE_ENABLE_SVE)
+ constexpr AbsoluteTolerance<float> tolerance_quant(
+     1); /**< Tolerance value for comparing reference's output against implementation's output for quantized data types */
+-#else   // !defined(__aarch64__) || defined(ENABLE_SVE)
++#else   // !defined(__aarch64__) || defined(ARM_COMPUTE_ENABLE_SVE)
+ constexpr AbsoluteTolerance<float> tolerance_quant(1);
+-#endif  // !defined(__aarch64__) || defined(ENABLE_SVE)
++#endif  // !defined(__aarch64__) || defined(ARM_COMPUTE_ENABLE_SVE)
+ const auto InPlaceDataSet    = make("InPlace", {false, true});
+ const auto OutOfPlaceDataSet = make("InPlace", {false});
+ } // namespace
+diff --git a/tests/validation/helpers/ActivationHelpers.cpp b/tests/validation/helpers/ActivationHelpers.cpp
+index a432482623..fe86d784eb 100644
+--- a/tests/validation/helpers/ActivationHelpers.cpp
++++ b/tests/validation/helpers/ActivationHelpers.cpp
+@@ -52,11 +52,11 @@ RelativeTolerance<float> relative_tolerance(DataType data_type, ActivationLayerI
+             switch (data_type)
+             {
+                 case DataType::F16:
+-#if defined(ENABLE_SVE)
++#if defined(ARM_COMPUTE_ENABLE_SVE)
+                     return RelativeTolerance<float>(0.25f);
+-#else  // !defined(ENABLE_SVE)
++#else  // !defined(ARM_COMPUTE_ENABLE_SVE)
+                     return RelativeTolerance<float>(0.1f);
+-#endif // defined(ENABLE_SVE)
++#endif // defined(ARM_COMPUTE_ENABLE_SVE)
+                 default:
+                     return RelativeTolerance<float>(0.05f);
+             }
+@@ -64,11 +64,11 @@ RelativeTolerance<float> relative_tolerance(DataType data_type, ActivationLayerI
+             switch (data_type)
+             {
+                 case DataType::F16:
+-#if defined(ENABLE_SVE)
++#if defined(ARM_COMPUTE_ENABLE_SVE)
+                     return RelativeTolerance<float>(0.9f);
+-#else  // !defined(ENABLE_SVE)
++#else  // !defined(ARM_COMPUTE_ENABLE_SVE)
+                     return RelativeTolerance<float>(0.01f);
+-#endif // defined(ENABLE_SVE)
++#endif // defined(ARM_COMPUTE_ENABLE_SVE)
+                 default:
+                     return RelativeTolerance<float>(0.00001f);
+             }
+@@ -89,11 +89,11 @@ AbsoluteTolerance<float> absolute_tolerance(DataType data_type, ActivationLayerI
+             switch (data_type)
+             {
+                 case DataType::F16:
+-#if defined(ENABLE_SVE)
++#if defined(ARM_COMPUTE_ENABLE_SVE)
+                     return AbsoluteTolerance<float>(0.25f);
+-#else  // !defined(ENABLE_SVE)
++#else  // !defined(ARM_COMPUTE_ENABLE_SVE)
+                     return AbsoluteTolerance<float>(0.01f);
+-#endif // defined(ENABLE_SVE)
++#endif // defined(ARM_COMPUTE_ENABLE_SVE)
+                 default:
+                     return AbsoluteTolerance<float>(0.00001f);
+             }
+@@ -101,11 +101,11 @@ AbsoluteTolerance<float> absolute_tolerance(DataType data_type, ActivationLayerI
+             switch (data_type)
+             {
+                 case DataType::F16:
+-#if defined(ENABLE_SVE)
++#if defined(ARM_COMPUTE_ENABLE_SVE)
+                     return AbsoluteTolerance<float>(0.9f);
+-#else  // !defined(ENABLE_SVE)
++#else  // !defined(ARM_COMPUTE_ENABLE_SVE)
+                     return AbsoluteTolerance<float>(0.01f);
+-#endif // defined(ENABLE_SVE)
++#endif // defined(ARM_COMPUTE_ENABLE_SVE)
+                 default:
+                     return AbsoluteTolerance<float>(0.00001f);
+             }
+--
+2.34.1
