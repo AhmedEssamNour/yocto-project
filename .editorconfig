@@ -1,0 +1,15 @@
+# Shared editor configuration <https://editorconfig.org>
+
+root = true
+
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{sh,pl,xml}]
+indent_size = 4
+indent_style = space
+
+[*.{yml,json,xslt}]
+indent_size = 2
+indent_style = space

@@ -1,0 +1,95 @@
+---
+header:
+  version: 17
+  includes:
+    - kas/templates/bblayers.conf.yml
+    - kas/templates/local-arago64-v3.conf.yml
+
+target: tisdk-default-image
+
+repos:
+  bitbake:
+    url: "https://git.openembedded.org/bitbake"
+    branch: "2.18"
+    path: "sources/bitbake"
+    layers:
+      .: disabled
+
+  meta-arago:
+    url: "https://git.yoctoproject.org/meta-arago"
+    branch: "wrynose-next"
+    path: "sources/meta-arago"
+    layers:
+      meta-arago-distro:
+      meta-arago-extras:
+
+  meta-qt6:
+    url: "https://code.qt.io/yocto/meta-qt6.git"
+    branch: "6.11"
+    path: "sources/meta-qt6"
+
+  meta-virtualization:
+    url: "https://git.yoctoproject.org/meta-virtualization"
+    branch: "master"
+    path: "sources/meta-virtualization"
+
+  meta-openembedded:
+    url: "https://git.openembedded.org/meta-openembedded"
+    branch: "wrynose"
+    path: "sources/meta-openembedded"
+    layers:
+      meta-networking:
+      meta-python:
+      meta-oe:
+      meta-gnome:
+      meta-filesystems:
+      meta-multimedia:
+
+  meta-ti:
+    url: "https://git.yoctoproject.org/meta-ti"
+    branch: "wrynose-next"
+    path: "sources/meta-ti"
+    layers:
+      meta-ti-test:
+      meta-ti-extras:
+      meta-beagle:
+      meta-ti-bsp:
+
+  meta-arm:
+    url: "https://git.yoctoproject.org/meta-arm"
+    branch: "wrynose"
+    path: "sources/meta-arm"
+    layers:
+      meta-arm:
+      meta-arm-toolchain:
+
+  oe-core:
+    url: "https://git.openembedded.org/openembedded-core"
+    branch: "wrynose"
+    path: "sources/oe-core"
+    layers:
+      meta:
+
+local_conf_header:
+  oe-layersetup-local-conf-config-specific: |
+    OVERRIDES:append = ":recipe-${@os.path.basename(d.getVar('FILE'))}"
+    BRANCH:recipe-cadence-mhdp-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-cnm-wave-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-goodix-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-linux-ti-staging_6.18.bb = "ti-linux-6.18.y-cicd"
+    BRANCH:recipe-linux-ti-staging-rt_6.18.bb = "ti-linux-6.18.y-cicd"
+    BRANCH:recipe-ltp-ddt_20260130.bb = "cicd"
+    BRANCH:recipe-prueth-fw_5.6.15.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-pruhsr-fw_2.17.25.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-pruprp-fw_2.17.25.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-prusw-fw_3.2.9.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-adc-fw.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-dm-fw.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-eth-fw.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-hsm-demo-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-pka-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-rtos-echo-test-fw.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-rtos-messageq-test-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-ti-sci-fw_git.bb = "ti-linux-firmware-next"
+    BRANCH:recipe-u-boot-ti-staging_2026.01.bb = "ti-u-boot-2026.01-next"
+    BRANCH:recipe-vxd-dec-fw_git.bb = "ti-linux-firmware-next"

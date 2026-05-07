@@ -1,0 +1,16 @@
+# This file takes repo entries in the format
+# repo name,repo uri,repo branch,repo commit[,layers=layer1:layer2...:layern]
+
+bitbake,https://git.openembedded.org/bitbake,master,05a0ca339a6fee75f7979c3ee95fc91b2bd9b92f
+meta-tisdk,https://github.com/TexasInstruments/meta-tisdk.git,master,12.00.00.07.04,layers=meta-ti-foundational:meta-ti-ml
+meta-arago,https://git.yoctoproject.org/meta-arago,master,12.00.00.07,layers=meta-arago-distro:meta-arago-extras:meta-arago-test
+meta-virtualization,https://git.yoctoproject.org/meta-virtualization,master,b8968685998a052e5bed0f68a546be800c6849ed,layers=
+meta-openembedded,https://git.openembedded.org/meta-openembedded,master,b5bb24b356d8200e2f4b088bc052eb668502ce33,layers=meta-networking:meta-python:meta-oe:meta-gnome:meta-filesystems:meta-multimedia
+meta-ti,https://git.yoctoproject.org/meta-ti,master,12.00.00.07,layers=meta-ti-extras:meta-beagle:meta-ti-bsp
+meta-arm,https://git.yoctoproject.org/meta-arm,master,37d31f41a8d5c47b1326cd0ae48b0032eb6d5e88,layers=meta-arm:meta-arm-toolchain
+oe-core,https://git.openembedded.org/openembedded-core,master,ec113301d73271d08bf4193c2509a34ad12385b6,layers=meta
+#meta-cyclonedx,https://github.com/iris-GmbH/meta-cyclonedx.git,main,0170751b487162f8e476fd32d441ddfcf24ca78a,layers=
+
+OECORELAYERCONF=./sample-files/bblayers.conf.sample
+OECORELOCALCONF=./sample-files/local-arago64-v3.conf.sample
+BITBAKE_INCLUSIVE_VARS=yes
