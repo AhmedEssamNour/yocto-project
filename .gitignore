@@ -1,0 +1,5 @@
+*.pyc
+*.log
+build/deploy-ti/images/*
+build/cache/*
+sources/bitbake/lib/bb/pysh/pyshtables.py
