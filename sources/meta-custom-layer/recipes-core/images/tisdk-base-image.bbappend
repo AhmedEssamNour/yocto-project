@@ -4,4 +4,5 @@
 IMAGE_INSTALL:append = " \
     cunit \
     cunit-dev \
+    testingorch \
 "
